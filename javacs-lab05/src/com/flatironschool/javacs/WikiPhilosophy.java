@@ -43,7 +43,11 @@ public class WikiPhilosophy {
 											visited.add(currentPage);
 											if (currentPage.equals("/wiki/Philosophy")) {
 												System.out.println("We are currently at https://en.wikipedia.org/wiki/Philosophy");
-								    			System.out.println("WE MADE IT IN " + visited.size() + " STEPS!!");
+								    			System.out.println("WE MADE IT IN " + (visited.size()-1) + " STEPS!!");
+								    			break outerloop;
+								    		} else if (currentPage.equals("/wiki/Attribute")) {
+								    			System.out.println("No valid link on this page but first link would bring you to Philosophy.");
+								    			System.out.println("WE MADE IT IN " + (visited.size()-2) + " VALID STEPS + 1 INVALID STEP.");
 								    			break outerloop;
 								    		}
 								    		break innerloop;
@@ -64,7 +68,7 @@ public class WikiPhilosophy {
 						}
 					}
 		        }
-			}
+			} 
     	}
     }
 }
