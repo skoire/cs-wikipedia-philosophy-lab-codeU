@@ -15,7 +15,7 @@ public class WikiPhilosophy {
 	final static WikiFetcher wf = new WikiFetcher();
 
 	public static void main(String[] args) throws IOException {
-    	String currentPage = "/wiki/Pythagoras";
+    	String currentPage = "/wiki/Java_(programming_language)";
     	ArrayList<String> visited = new ArrayList<String>();
     	visited.add(currentPage);
     	outerloop: while (true) {
