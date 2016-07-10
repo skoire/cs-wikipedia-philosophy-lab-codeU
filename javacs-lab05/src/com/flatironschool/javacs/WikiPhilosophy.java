@@ -13,39 +13,58 @@ import org.jsoup.select.Elements;
 public class WikiPhilosophy {
 	
 	final static WikiFetcher wf = new WikiFetcher();
-	
-	/**
-	 * Tests a conjecture about Wikipedia and Philosophy.
-	 * 
-	 * https://en.wikipedia.org/wiki/Wikipedia:Getting_to_Philosophy
-	 * 
-	 * 1. Clicking on the first non-parenthesized, non-italicized link
-     * 2. Ignoring external links, links to the current page, or red links
-     * 3. Stopping when reaching "Philosophy", a page with no links or a page
-     *    that does not exist, or when a loop occurs
-	 * 
-	 * @param args
-	 * @throws IOException
-	 */
+
 	public static void main(String[] args) throws IOException {
-		
-        // some example code to get you started
+    	String currentPage = "/wiki/Pythagoras";
+    	ArrayList<String> visited = new ArrayList<String>();
+    	visited.add(currentPage);
+    	outerloop: while (true) {
+    		String url = "https://en.wikipedia.org" + currentPage;
 
-		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
-		Elements paragraphs = wf.fetchWikipedia(url);
+			innerloop: for (int j=0;j<=3;j++) {
+				Elements paragraphs = wf.fetchWikipedia(url);
+				System.out.println("we are currently at "+ url);
 
-		Element firstPara = paragraphs.get(0);
-		
-		Iterable<Node> iter = new WikiNodeIterable(firstPara);
-		for (Node node: iter) {
-			if (node instanceof TextNode) {
-				System.out.print(node);
+				Element para = paragraphs.get(j);
+				Iterable<Node> iter = new WikiNodeIterable(para);
+				
+				int openCounter = 0;
+				int closedCounter = 0;
+
+				for (Node node: iter) {
+					if (node instanceof Element) {
+						if (node.hasAttr("href")) {
+							if(!(node.parent().toString().charAt(1) == 'i')) {
+								String link = node.attr("href");
+								if (!(link.charAt(0) == '#')) {
+									if (openCounter == closedCounter){
+										if (!visited.contains(link)){
+											currentPage = link;
+											visited.add(currentPage);
+											if (currentPage.equals("/wiki/Philosophy")) {
+												System.out.println("We are currently at https://en.wikipedia.org/wiki/Philosophy");
+								    			System.out.println("WE MADE IT IN " + visited.size() + " STEPS!!");
+								    			break outerloop;
+								    		}
+								    		break innerloop;
+								    	}
+									}
+								}
+							}
+						}
+					} else if (node instanceof TextNode) {
+						String text = node.toString();
+						for (int i = 0; i < text.length(); i++){
+							if (text.charAt(i) == '('){
+								openCounter++;
+							}
+							else if (text.charAt(i) == ')'){
+								closedCounter++;
+							}
+						}
+					}
+		        }
 			}
-        }
-
-        // the following throws an exception so the test fails
-        // until you update the code
-        String msg = "Complete this lab by adding your code and removing this statement.";
-        throw new UnsupportedOperationException(msg);
-	}
+    	}
+    }
 }
